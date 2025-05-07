@@ -269,8 +269,4 @@ with open('agent_outputs.csv', 'w', encoding='utf-8') as f:
     writer.writerows(outputs)
 ```
 
----
-
 Explore o poder dos **sistemas multiagentes offline** com CrewAI + Ollama!
-
-```
