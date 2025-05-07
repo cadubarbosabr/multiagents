@@ -3,11 +3,13 @@
 
 ## 📌 Visão Geral
 
-Este repositório implementa um sistema **multiagentes** para automação de tarefas técnicas usando o framework **CrewAI** e o modelo de linguagem **Phi-3 Mini** via **Ollama**, com execução 100% offline e suporte a **GPU NVIDIA GTX 1050 Ti**.
+Este repositório implementa um sistema **multiagentes** para automação de tarefas técnicas usando o framework
+**CrewAI** e o modelo de linguagem **Phi-3 Mini** via **Ollama**, com execução 100% offline e suporte a **GPU NVIDIA GTX 1050 Ti**.
 
-Três agentes atuam sequencialmente:
+Quatro agentes atuam sequencialmente:
 - **Arquiteto de Soluções:** Cria o desenho de arquitetura e um ADR.
 - **Tech Lead:** Revisa a arquitetura, sugerindo melhorias.
+- **Especialista em Segurança:** Revisa a segurança da solução abordada.
 - **Gerente de Tecnologia:** Gera um relatório com custo, cronograma e benefícios.
 
 ### ⚙️ Funcionalidades
@@ -79,7 +81,7 @@ $env:CUDA_VISIBLE_DEVICES = "0"
 ### 3. Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/multiagentes.git
+git clone https://github.com/cadubarbosabr/multiagentes.git
 cd multiagentes
 ```
 
