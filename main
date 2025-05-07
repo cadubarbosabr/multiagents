@@ -1,0 +1,99 @@
+from crewai import Agent, Task, Crew
+import os
+import requests
+
+# Configurar variáveis de ambiente para o litellm usar o Ollama
+os.environ["OLLAMA_API_BASE"] = "http://localhost:11434"  # Endpoint do Ollama
+os.environ["OLLAMA_MODEL"] = "phi4-mini:latest"  # Nome do modelo (ajuste se for phi4-mini)
+
+# Verificar se o Ollama está rodando
+try:
+    response = requests.get("http://localhost:11434")
+    if response.status_code != 200:
+        raise Exception("Ollama server não está rodando. Inicie com 'ollama serve'.")
+except Exception as e:
+    print(f"Erro ao conectar ao Ollama: {str(e)}")
+    exit(1)
+
+# Definir o Agente Arquiteto de Soluções
+arquiteto = Agent(
+    role="Arquiteto de Soluções",
+    goal="Gerar desenhos de arquitetura de soluções e ADRs para novos produtos, em consonância com a arquitetura alvo do mercado.",
+    backstory="Você é um engenheiro de infraestrutura experiente, especialista médio em criar novos ambientes em cloud.",
+    verbose=True,
+    allow_delegation=False,
+    llm="ollama/phi4-mini:latest"  # Especificar o modelo diretamente como string
+)
+
+# Definir o Agente Tech Lead
+tech_lead = Agent(
+    role="Tech Lead",
+    goal="Revisar e melhorar a capacidade técnica do produto.",
+    backstory="Você é um analista meticuloso, com olho para detalhes e performance.",
+    verbose=True,
+    allow_delegation=False,
+    llm="ollama/phi4-mini:latest"
+)
+
+# Definir o Agente Gerente
+gerente = Agent(
+    role="Gerente de Tecnologia",
+    goal="Manter a gestão de custo, entrega e reports para o cliente.",
+    backstory="Você é um experiente Gerente de Tecnologia, com vasta experiência em projetos complexos e milionários.",
+    verbose=True,
+    allow_delegation=False,
+    llm="ollama/phi4-mini:latest"
+)
+
+# Tarefa para o Arquiteto de Soluções
+tarefa_escrita = Task(
+    description="Crie: 1) Um parágrafo descrevendo a integração B2B/B2C com EntraID; 2) Um diagrama textual (ex.: 'Tenant B2B -> EntraID -> API Gateway -> Tenant B2C'); 3) Um ADR com Contexto, Decisão, Consequências.",
+    expected_output="Parágrafo, diagrama textual, e ADR estruturado.",
+    agent=arquiteto
+)
+
+# Tarefa para o Tech Lead
+tarefa_edicao_tech_lead = Task(
+    description="Revise a descrição da arquitetura, corrigindo erros e sugerindo melhorias para torná-la mais tecnicamente viável, escalável e impactante.",
+    expected_output="Uma versão revisada da descrição da arquitetura.",
+    agent=tech_lead,
+    context=[tarefa_escrita]
+)
+
+# Tarefa para o Gerente
+tarefa_edicao_gerente = Task(
+    description="Com base na arquitetura revisada, crie um relatório com: 1) Custo estimado (ex.: $ por mês); 2) Cronograma (ex.: meses); 3) Benefícios (ex.: segurança, escalabilidade).",
+    expected_output="Um relatório estruturado com estimativas de custo, cronograma e benefícios.",
+    agent=gerente,
+    context=[tarefa_edicao_tech_lead]
+)
+
+especialista_seguranca = Agent(
+    role="Especialista em Segurança",
+    goal="Garantir que a arquitetura seja segura contra vulnerabilidades comuns.",
+    backstory="Você é um especialista em cibersegurança, com experiência em proteger sistemas em nuvem.",
+    verbose=True,
+    allow_delegation=False,
+    llm="ollama/phi4-mini:latest"
+)
+
+tarefa_seguranca = Task(
+    description="Revise a arquitetura revisada pelo Tech Lead, identificando vulnerabilidades (ex.: falta de criptografia, exposição de APIs) e sugerindo mitigações.",
+    expected_output="Relatório de segurança com vulnerabilidades e mitigações.",
+    agent=especialista_seguranca,
+    context=[tarefa_edicao_tech_lead]
+)
+
+equipe = Crew(
+    agents=[arquiteto, tech_lead, gerente, especialista_seguranca],
+    tasks=[tarefa_escrita, tarefa_edicao_tech_lead, tarefa_edicao_gerente, tarefa_seguranca],
+    verbose=True
+)
+
+# Executar o fluxo de trabalho
+try:
+    resultado = equipe.kickoff()
+    print("Resultado final:")
+    print(resultado)
+except Exception as e:
+    print(f"Erro durante a execução: {str(e)}")
