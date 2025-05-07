@@ -1,8 +1,6 @@
 ````markdown
 # Multiagentes: Sistema de Arquitetura de Soluções com CrewAI e Ollama
 
-![Banner do Projeto](#) <!-- Substitua pelo caminho da imagem, se desejar -->
-
 ## 📌 Visão Geral
 
 Este repositório implementa um sistema **multiagentes** para automação de tarefas técnicas usando o framework **CrewAI** e o modelo de linguagem **Phi-3 Mini** via **Ollama**, com execução 100% offline e suporte a **GPU NVIDIA GTX 1050 Ti**.
@@ -215,7 +213,7 @@ Repositório: https://github.com/seu-usuario/multiagentes
 
 **Autor:** \CaduBarbosa
 **GitHub:** \CaduBarbosaBR
-**X (Twitter):** \CaduBarbosaBR <!-- Adicione se desejar -->
+**X (Twitter):** \CaduBarbosaBR
 
 ---
 
